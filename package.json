@@ -1,0 +1,18 @@
+{
+  "name": "lanyards-and-dragons",
+  "version": "0.1.0",
+  "description": "Lanyards & Dragons — a green-phosphor CRT platformer roguelike-RPG about going to tech conferences, reskinned as medieval fantasy. First shot: the inter-net tutorial level.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "phaser": "^3.88.2"
+  },
+  "devDependencies": {
+    "playwright": "^1.61.0",
+    "vite": "^5.4.10"
+  }
+}
