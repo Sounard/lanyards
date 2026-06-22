@@ -1,15 +1,14 @@
 import Phaser from 'phaser';
 import { VIEW } from '../config.js';
 import { text, bar, COL } from '../ui.js';
-import { applyCRT } from '../main.js';
 
-// HUD = a shell. Runs as an overlay over the level. Reads state from the
-// registry ('hud' / 'toast') so it stays decoupled from the gameplay scene.
+// HUD = a shell. Runs as a TRANSPARENT overlay over the level. It must NOT run
+// the CRT post-FX pass — that pass forces alpha=1 and would paint the whole
+// screen opaque black over the world below. The level beneath already has CRT.
 export default class UIScene extends Phaser.Scene {
   constructor() { super('UIScene'); }
 
   create() {
-    applyCRT(this);
     this.hp = text(this, 16, 12, '', { size: 18, color: COL.bright });
     this.coins = text(this, 16, 36, '', { size: 15, color: COL.glow });
     this.bw = text(this, 16, 58, '', { size: 14, color: COL.mid });

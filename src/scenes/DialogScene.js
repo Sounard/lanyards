@@ -1,9 +1,12 @@
 import Phaser from 'phaser';
 import { VIEW } from '../config.js';
 import { text, panel, typewriter, COL, FONT } from '../ui.js';
-import { applyCRT } from '../main.js';
 import { sfx } from '../audio/sfx.js';
 import { DIALOGUE } from '../data/dialogue.js';
+
+// NOTE: this is a TRANSPARENT overlay over the paused level, so it must NOT run
+// the CRT post-FX pass (that pass forces alpha=1 and would paint the whole
+// screen opaque black over the world). The level beneath already has CRT.
 
 // Branching NPC dialogue (2-3 options), terminal-styled. SAFE options chuckle;
 // the ONE flame-bait option (glows hotter) drops into a Flame War duel. Also
@@ -22,16 +25,16 @@ export default class DialogScene extends Phaser.Scene {
   init(data) { this.data = data; }
 
   create() {
-    applyCRT(this);
     this.tree = DIALOGUE[this.data.dialogueKey];
     this.sel = 0;
     this.mode = 'talk';
 
-    const px = 70, py = 296, pw = VIEW.W - 140, ph = 220;
+    const px = 60, py = 250, pw = VIEW.W - 120, ph = 276;
     panel(this, px, py, pw, ph);
     this.header = text(this, px + 18, py + 12, '> ' + this.tree.name, { size: 16, color: COL.glow });
-    this.body = text(this, px + 18, py + 42, '', { size: 14, color: COL.bright, wrap: pw - 36 });
-    this.optY = py + 132;
+    this.bodyTop = py + 44;
+    this.body = text(this, px + 18, this.bodyTop, '', { size: 14, color: COL.bright, wrap: pw - 36 });
+    this.optY = this.bodyTop + 120;   // recomputed per node from the body's real height
     this.opts = [];
 
     this.input.keyboard.on('keydown', e => this.onKey(e));
@@ -45,7 +48,11 @@ export default class DialogScene extends Phaser.Scene {
     this.node = this.tree.nodes[key];
     this.sel = 0;
     this.clearOpts();
-    this.tw = typewriter(this, this.body, this.node.lines.join('\n'), 12, () => this.renderOpts());
+    // measure the full body height first so options never overlap the speech
+    const full = this.node.lines.join('\n');
+    this.body.setText(full);
+    this.optY = this.bodyTop + this.body.height + 18;
+    this.tw = typewriter(this, this.body, full, 12, () => this.renderOpts());
     this.renderOpts(); // render greyed; highlighted once typing done
   }
 
