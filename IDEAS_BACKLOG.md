@@ -83,3 +83,39 @@ goes here instead of stalling the build.
 - **Roster fidelity:** companies are fantasy-pun reskins; speaker first names keep
   one letter flipped (Lélio→Lélia, Jeroen→Jeroan, Sébastien→Sébastier, Romain→
   Romair, Alexandre→Alexandro, David→Davod, Filip→Filop, Laurent→Lauront).
+
+---
+
+## Boss fights (future)
+
+### The Metalord — a two-phase boss (parody of Zuckerberg / Meta)
+Reference: the Meta founder's two hobbies — BJJ and the metaverse. Scramble the
+name per the branding guardrail (no marks): e.g. **Lord Zuccarro, the Metalord**
+/ "Zuck the Changeling" — recognizable, deniable. Fits a future Meta-Connect /
+"Mirror Court" level (avatars = changeling reflections; the Hollow Bazaar /
+metaverse hype is the satire target — never the person).
+
+Two-phase fight, extending the reusable `DuelScene` into a `BossScene` (or a
+`phases: []` option on DuelScene):
+
+- **Phase 1 — BJJ (the mat).** Not the stand-up Flame War — a *grappling* duel.
+  Moves reskinned: clinch / takedown / sweep / submission instead of light /
+  heavy / special; a "submission" meter instead of a health bar (tap him out).
+  Gi + belt sprite. He keeps trying to mount; you escape and reverse.
+- **Phase 2 — the metaverse.** On winning the grapple he "jacks in": the arena
+  flips to a neon wireframe metaverse and he fights you through waves of **robot
+  avatars** (a short beat-'em-up / dodge-the-adds section) before the final blow.
+  Boss has a VR-headset sprite; the robots are legless (the avatars-have-no-legs
+  joke).
+
+Easter eggs: legless avatars; he keeps insisting "the metaverse is the future"
+(it is visibly empty); a "Year of Efficiency" banner; he challenges you to a
+*cage match* on entry. Flame-bait (if a talk option precedes the fight):
+"put some legs on your avatar, the metaverse is dead." Win → big Lanyard +
+he mutters "we're pivoting to AI anyway."
+
+Engine notes: DuelScene already does arena + health bars + FIGHT splash + win/
+lose; a boss = (a) a `phases` array each with its own move-set/win-condition, and
+(b) a wave-spawner for phase 2 (reuse the LagSlime/bot enemy + patrol). Keep it
+light — the comedy is "a billionaire made me do jiu-jitsu then logged into an
+empty metaverse," not a deep fighter.
