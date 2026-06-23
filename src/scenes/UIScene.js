@@ -13,7 +13,7 @@ export default class UIScene extends Phaser.Scene {
     this.coins = text(this, 16, 36, '', { size: 15, color: COL.glow });
     this.bw = text(this, 16, 58, '', { size: 14, color: COL.mid });
     this.layer = text(this, VIEW.W - 16, 12, '', { size: 14, color: COL.mid }).setOrigin(1, 0);
-    this.help = text(this, VIEW.W - 16, 34, 'MOVE ←→  JUMP ↑  CLIMB ↑↓  DIVE ↓  HIT J  TALK E', { size: 11, color: COL.dark }).setOrigin(1, 0);
+    this.help = text(this, VIEW.W - 16, 34, 'MOVE ←→  JUMP ↑  HIT J  TALK E  ? HELP', { size: 11, color: COL.dark }).setOrigin(1, 0);
 
     this.toast = text(this, VIEW.W / 2, VIEW.H - 40, '', { size: 14, color: COL.glow, origin: 0.5 });
     this.toast.setAlign('center');

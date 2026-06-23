@@ -47,6 +47,13 @@ export default class DuelScene extends Phaser.Scene {
 
     this.cursors = this.input.keyboard.createCursorKeys();
     this.keys = this.input.keyboard.addKeys('J,K,L,SPACE,ENTER');
+    this.input.keyboard.on('keydown', e => {
+      if ((e.key === '?' || e.key === 'h' || e.key === 'H') && this.scene.isActive()) {
+        this.scene.pause();
+        this.scene.launch('HelpScene', { from: this.scene.key });
+        this.scene.bringToTop('HelpScene');
+      }
+    });
 
     // taunt bubble
     this.bubble = text(this, this.foe.spr.x, 120, '', { size: 14, color: COL.glow, origin: 0.5 });

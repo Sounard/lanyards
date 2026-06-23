@@ -60,7 +60,7 @@ export default class MenuScene extends Phaser.Scene {
 
     // footer / controls
     this.hint = text(this, cx, 500,
-      '↑↓←→ move    ENTER play    A amber palette    C crt    R reset save',
+      '↑↓←→ move   ENTER play   ? help   A amber   C crt   R reset',
       { size: 13, color: COL.mid, origin: 0.5 });
     this.status = text(this, cx, 522, '', { size: 13, color: COL.glow, origin: 0.5 });
 
@@ -90,7 +90,9 @@ export default class MenuScene extends Phaser.Scene {
   }
 
   onKey(e) {
+    if (!this.scene.isActive()) return;   // Help overlay is up
     const cols = 2;
+    if (e.key === '?' || e.key === 'h' || e.key === 'H') { this.openHelp(); return; }
     if (e.key === 'ArrowDown') { this.idx = Math.min(this.items.length - 1, this.idx + cols); sfx.blip(); this.renderList(); }
     else if (e.key === 'ArrowUp') { this.idx = Math.max(0, this.idx - cols); sfx.blip(); this.renderList(); }
     else if (e.key === 'ArrowRight') { this.idx = Math.min(this.items.length - 1, this.idx + 1); sfx.blip(); this.renderList(); }
@@ -136,6 +138,13 @@ export default class MenuScene extends Phaser.Scene {
     this.registry.set('crt', true);
     sfx.save();
     this.scene.restart();
+  }
+
+  openHelp() {
+    sfx.blip();
+    this.scene.pause();
+    this.scene.launch('HelpScene', { from: 'MenuScene' });
+    this.scene.bringToTop('HelpScene');
   }
 
   flashStatus(msg) {

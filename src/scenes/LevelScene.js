@@ -66,7 +66,11 @@ export default class LevelScene extends Phaser.Scene {
 
     this.cursors = this.input.keyboard.createCursorKeys();
     this.keys = this.input.keyboard.addKeys('W,A,S,D,J,F,E,SPACE,ESC,ENTER');
-    this.input.keyboard.on('keydown-ESC', () => this.quitToMenu());
+    // guard with isActive() so these don't fire while the Help overlay is up
+    this.input.keyboard.on('keydown-ESC', () => { if (this.scene.isActive()) this.quitToMenu(); });
+    this.input.keyboard.on('keydown', e => {
+      if ((e.key === '?' || e.key === 'h' || e.key === 'H') && this.scene.isActive() && !this.finished) this.openHelp();
+    });
 
     this.scene.launch('UIScene');
     this.scene.bringToTop('UIScene');
@@ -515,6 +519,12 @@ export default class LevelScene extends Phaser.Scene {
       fontFamily: FONT, fontSize: '16px', color: COL.bright, align: 'center', lineSpacing: 6
     }).setOrigin(0.5).setScrollFactor(0).setDepth(101);
     this.input.keyboard.once('keydown-ENTER', () => this.scene.restart());
+  }
+
+  openHelp() {
+    this.scene.pause();
+    this.scene.launch('HelpScene', { from: this.scene.key });
+    this.scene.bringToTop('HelpScene');
   }
 
   quitToMenu() {
