@@ -44,6 +44,7 @@ futuristic WOW           ->  the Artificers' Exposition: dazzling enchanted cont
 | Game name              | Real conf (place)      | Culture-matched feel | Status |
 |------------------------|------------------------|----------------------|--------|
 | inter-net              | (none — tutorial)      | 1990 fishermen's port; first time online | **BUILT** |
+| on-the-sauna           | Off the Radar (Brussels) | hidden, invite-only AI conclave in a bath-house, a couple of months after the Awakening (Jan-2026 singularity). Labs as rival ARTIFICERS summoning homunculi (agents); MCP as the binding that lets a familiar wield any tool. Phones in the cloakroom, one stage, one walking dinner. | **BUILT** |
 | Webb Summit            | Web Summit (Lisbon)    | sprawling spider-web metropolis on a hill; thousands of web-weavers (startups) spin frantically to snare investors | stub |
 | Interstolar            | Intersolar (Munich)    | earnest solar-druids & sun-mages; bright, hopeful, utopian | stub |
 | Foss-Fae               | FOSDEM (Brussels)      | Free Folk + helpful hob-daemons; chaotic-good, gift economy, anti-corporate, "fork" off into new courts. NOT evil demons. | stub |
@@ -91,3 +92,47 @@ unlock + bonus packets). Depth = secrets.
 option per provocative NPC drops into a 1v1 `DuelScene`. Tutorial bait lines:
 - The Keeper/Sysop — *"BBS is dead. The Web is the future, old man."*
 - BBS Vendor — *"AOL is the real internet."*
+
+---
+
+## Built level — on-the-sauna ("Off the Radar," Brussels)
+
+A hidden, invite-only AI conclave in a bath-house, a couple of months after the
+Awakening (the Jan-2026 singularity nobody quite noticed). Six layers: **The
+Cloakroom** (Minister opens the day; "phones to the cloakroom") → **The Main
+Stage** (one track; first rogue agents) → **The MCP Hall** (bind a tool at a
+socket to drop a forcefield gate; gain an Agent familiar) → **Founders' Bench**
+(Belgian founders + VC/media, crowded) → **The Cold Plunge** (dive; BREATH meter;
+deeper = better loot) → **The Latent Space** (the secret room: meet the Awakening,
+get a permanent Agent familiar). Clear it → **Lanyard #2**.
+
+**New mechanics:** Agent familiar (auto-vacuums nearby packets), MCP sockets→gates
+(press E at a socket to dissolve a forcefield over a stash), rogue "loop-bot"
+agents (the splitting enemy, reskinned). Cold plunge reuses the dive/meter system.
+
+**Branding:** parody only — companies are fantasy-pun reskins (no marks); speaker
+first names keep one letter flipped. Satire aimed at hype/closed-vs-open holy wars,
+never at people.
+
+| Real | In-game NPC | Easter egg | Flame-bait duel |
+|---|---|---|---|
+| Laurent Hublet (Min.) | Minister **Lauront** Hubelt | cuts the ribbon, opens the day / tutorial | — |
+| Cloudflare | the **Cloudflaire** Ward | "checking that thou art human…" | — |
+| OpenAI | the **Open Eye** | finishes your sentence; gives an Agent | ✅ open vs closed |
+| Anthropic | the **Anthropric** Order (*Cloderic*) | makes you sign a Constitution | ✅ safety |
+| Google DeepMind | the **Gaggle** // Deep Mind | answer buried under sponsored runes | ✅ scale |
+| Mistral | **Le Mistrale** (*Lélia*) | free open "gust"; speaks French | ✅ open weights |
+| Vercel | **Versel** // Edge | deploys a copy of you; "Ready." | — |
+| ElevenLabs | the **Eleven Bards** | repeats your line in your own voice | — |
+| AWS | the **All-Wide Sky** | bills you for standing near it | — |
+| Stripe | **Stryp** the Toll | skims 2.9% + 30 off packets | — |
+| TechWolf | **Techwulf** (*Jeroan*) | reads your "skill-pelt" | — |
+| Aikido | the **Aikido** Warden | finds a vuln in your Pointer | — |
+| Collibra | the **Collibrary** | governance scroll before the loot | — |
+| Vertical Compute | the **Vertical Forge** (*Sébastier*) | cube-tower grows as you talk | — |
+| penbox | **Quillbox** | a form that auto-fills + drops a packet | — |
+| 20VC | **Score Ventures** (*Alexandro*) | "what's thy ARR?"; 20 for 20% | — |
+| Hypertext | the **Chronicler** (*Romair*) | live-writes a snarky chronicle | — |
+| Syndicate One | the **First Syndicate** | "I know a guy" → stash hint | — |
+| Fortino × Flexion | the **Patrons' Bench** (*Filop & Davod*) | interview each other forever | — |
+| (not printed yet) | two **[REDACTED]** cloaks | point you to the latent space | — |

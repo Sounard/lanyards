@@ -24,12 +24,12 @@ export default class UIScene extends Phaser.Scene {
     const h = this.registry.get('hud');
     if (h) {
       this.hp.setText('HEALTH ' + bar(h.hp, h.maxhp));
-      this.coins.setText('PACKETS: ' + h.coins);
+      this.coins.setText('PACKETS: ' + h.coins + (h.hasAgent ? '   [AGENT]' : ''));
       if (h.underwater) {
         this.bw.setVisible(true);
         const blocks = Math.round((h.bandwidth / h.maxbw) * 16);
         const low = h.bandwidth < 30;
-        this.bw.setText('BANDWIDTH ' + bar(blocks, 16));
+        this.bw.setText((h.meterLabel || 'BANDWIDTH') + ' ' + bar(blocks, 16));
         this.bw.setColor(low ? COL.bright : COL.mid);
       } else {
         this.bw.setVisible(false);

@@ -7,6 +7,7 @@ import PreloadScene from './scenes/PreloadScene.js';
 import BootScene from './scenes/BootScene.js';
 import MenuScene from './scenes/MenuScene.js';
 import InterNetScene from './scenes/InterNetScene.js';
+import OnTheSaunaScene from './scenes/OnTheSaunaScene.js';
 import UIScene from './scenes/UIScene.js';
 import DialogScene from './scenes/DialogScene.js';
 import DuelScene from './scenes/DuelScene.js';
@@ -30,7 +31,7 @@ const config = {
     default: 'arcade',
     arcade: { gravity: { y: 0 }, debug: false }
   },
-  scene: [PreloadScene, BootScene, MenuScene, InterNetScene, UIScene, DialogScene, DuelScene, VoidScene]
+  scene: [PreloadScene, BootScene, MenuScene, InterNetScene, OnTheSaunaScene, UIScene, DialogScene, DuelScene, VoidScene]
 };
 
 const game = new Phaser.Game(config);

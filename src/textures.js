@@ -182,4 +182,102 @@ export function generateTextures(scene) {
   makeTex(scene, TKEY.spark, 6, 6, g => {
     g.fillStyle(G, 1); g.fillRect(2, 0, 2, 6); g.fillRect(0, 2, 6, 2);
   });
+
+  // ============ on-the-sauna ============
+
+  // --- sauna bench / wood plank platform ---
+  makeTex(scene, TKEY.wood, 32, 32, g => {
+    g.fillStyle(D, 1); g.fillRect(0, 0, 32, 32);
+    g.fillStyle(M, 1); g.fillRect(0, 0, 32, 3);
+    g.lineStyle(1, GREEN.bg, 1);
+    g.beginPath(); g.moveTo(0, 11); g.lineTo(32, 11); g.moveTo(0, 22); g.lineTo(32, 22); g.strokePath();
+    dither(g, M, 32, 32, 16, 17);   // wood grain
+  });
+
+  // --- MCP forcefield gate (vertical shimmer bars) ---
+  makeTex(scene, TKEY.gate, 16, 32, g => {
+    g.fillStyle(M, 0.5); g.fillRect(0, 0, 16, 32);
+    g.fillStyle(B, 1); g.fillRect(2, 0, 2, 32); g.fillRect(7, 0, 2, 32); g.fillRect(12, 0, 2, 32);
+    g.fillStyle(G, 1); dither(g, G, 16, 32, 18, 9);
+  });
+
+  // --- MCP socket (a tool port) ---
+  makeTex(scene, TKEY.socket, 22, 22, g => {
+    g.fillStyle(D, 1); g.fillRect(0, 0, 22, 22);
+    g.lineStyle(2, B, 1); g.strokeRect(2, 2, 18, 18);
+    g.fillStyle(GREEN.bg, 1); g.fillRect(7, 5, 3, 8); g.fillRect(12, 5, 3, 8);  // two prongs (a plug)
+    g.fillStyle(G, 1); g.fillRect(6, 16, 10, 3);
+  });
+
+  // --- Agent familiar (a homunculus orb / eye) ---
+  makeTex(scene, TKEY.agent, 18, 18, g => {
+    g.fillStyle(D, 1); g.fillCircle(9, 9, 8);
+    g.fillStyle(M, 1); g.fillCircle(9, 9, 6);
+    g.fillStyle(B, 1); g.fillCircle(9, 9, 3);
+    g.fillStyle(G, 1); g.fillCircle(8, 8, 1);
+  });
+
+  // --- rogue agent (a loop-bot; the level's splitting enemy) ---
+  makeTex(scene, TKEY.bot, 28, 24, g => {
+    g.fillStyle(D, 1); g.fillRect(3, 6, 22, 16);
+    g.fillStyle(M, 1); g.fillRect(5, 4, 18, 14);
+    g.fillStyle(GREEN.bg, 1); g.fillRect(8, 9, 5, 4); g.fillRect(16, 9, 5, 4); // eyes
+    g.fillStyle(B, 1); g.fillRect(9, 10, 2, 2); g.fillRect(17, 10, 2, 2);
+    g.fillStyle(G, 1); g.fillRect(11, 1, 2, 4); g.fillRect(11, 0, 2, 1);       // antenna
+    dither(g, B, 28, 24, 8, 13);
+  });
+  makeTex(scene, TKEY.botSmall, 16, 14, g => {
+    g.fillStyle(M, 1); g.fillRect(1, 2, 14, 11);
+    g.fillStyle(GREEN.bg, 1); g.fillRect(4, 6, 2, 2); g.fillRect(10, 6, 2, 2);
+    g.fillStyle(G, 1); g.fillRect(7, 0, 2, 2);
+  });
+
+  // --- artificer (AI-lab mage with a hovering orb) ---
+  makeTex(scene, TKEY.artificer, 26, 36, g => {
+    g.fillStyle(D, 1); g.fillRect(4, 14, 18, 22);
+    g.fillStyle(M, 1); g.fillRect(6, 16, 14, 18);
+    g.fillStyle(B, 1); g.fillRect(8, 6, 10, 9);          // hooded head
+    g.fillStyle(GREEN.bg, 1); g.fillRect(10, 9, 6, 3);
+    g.fillStyle(G, 1); g.fillCircle(21, 12, 4);           // hovering orb
+    g.fillStyle(B, 1); g.fillCircle(21, 12, 2);
+  });
+
+  // --- golem (cube-stacking compute / data / cloud) ---
+  makeTex(scene, TKEY.golem, 28, 34, g => {
+    g.fillStyle(D, 1); g.fillRect(4, 8, 20, 26);
+    g.fillStyle(M, 1); g.fillRect(6, 10, 16, 12);
+    g.lineStyle(1, GREEN.bg, 1); g.strokeRect(6, 10, 16, 12); g.strokeRect(6, 22, 16, 10);
+    g.fillStyle(B, 1); g.fillRect(8, 3, 12, 6);          // cube head
+    g.fillStyle(GREEN.bg, 1); g.fillRect(10, 5, 3, 2); g.fillRect(15, 5, 3, 2);
+    g.fillStyle(G, 1); dither(g, G, 28, 34, 6, 7);
+  });
+
+  // --- warden (security; shield) ---
+  makeTex(scene, TKEY.warden, 26, 34, g => {
+    g.fillStyle(M, 1); g.fillRect(6, 12, 14, 18);
+    g.fillStyle(B, 1); g.fillRect(8, 4, 9, 9);
+    g.fillStyle(GREEN.bg, 1); g.fillRect(10, 7, 5, 3);
+    g.fillStyle(D, 1); g.fillRect(15, 12, 9, 14);        // shield
+    g.lineStyle(2, G, 1); g.strokeRect(15, 12, 9, 14);
+    g.fillStyle(G, 1); g.fillRect(18, 16, 3, 6);
+  });
+
+  // --- patron (VC / media; suited, holding a scroll/coin) ---
+  makeTex(scene, TKEY.patron, 24, 34, g => {
+    g.fillStyle(D, 1); g.fillRect(5, 12, 14, 18);        // suit
+    g.fillStyle(M, 1); g.fillRect(10, 12, 4, 16);        // shirt
+    g.fillStyle(B, 1); g.fillRect(8, 4, 8, 8);           // head
+    g.fillStyle(GREEN.bg, 1); g.fillRect(10, 7, 4, 2);
+    g.fillStyle(G, 1); g.fillCircle(19, 18, 3);          // coin
+    g.fillStyle(D, 1); g.fillRect(18, 17, 2, 2);
+  });
+
+  // --- beastfolk (wolf-eared founder) ---
+  makeTex(scene, TKEY.beast, 24, 34, g => {
+    g.fillStyle(M, 1); g.fillRect(5, 12, 14, 18);
+    g.fillStyle(B, 1); g.fillRect(7, 5, 10, 8);          // muzzled head
+    g.fillStyle(D, 1); g.fillRect(5, 1, 4, 5); g.fillRect(15, 1, 4, 5); // ears
+    g.fillStyle(GREEN.bg, 1); g.fillRect(9, 8, 2, 2); g.fillRect(13, 8, 2, 2);
+    g.fillStyle(G, 1); g.fillRect(11, 11, 2, 2);         // snout
+  });
 }

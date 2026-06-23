@@ -62,3 +62,24 @@ goes here instead of stalling the build.
 - **Known simplifications (intentional for v1):** combat is single-button melee;
   the duel AI is deliberately shallow; nets are overlap-zones (climb/hang) rather
   than snapped ladders; loot/enemy randomization is light (per-run zone rolls).
+
+---
+
+## Shipped: on-the-sauna (level 2) — notes for next session
+
+- **Refactored** the monolithic InterNetScene into a data-driven `LevelScene`
+  base; inter-net and on-the-sauna are now thin subclasses + data. Future levels
+  are data + a 3-line scene. Optional data sections: water, nets, mcpGates/
+  mcpSockets, agentStart, skin (block/enemy textures), secret (typed reward).
+- **Unlock plumbing** is now prereq-based: conferences carry `requires: <lanyardId>`;
+  `MenuScene.isOpen` honors it. on-the-sauna requires `inter-net`.
+- New mechanics to reuse/extend: Agent familiar (`entities/Agent.js`, vacuums
+  packets), MCP socket→gate (press E to drop a forcefield), bot enemy skin.
+- **Parked sauna ideas not built:** a real HEAT meter (steam rooms that damage
+  unless you cold-plunge) — currently steam is flavor and the meter is the reused
+  dive/BREATH system; a löyly "steam burst" jump-boost; agent that also fights;
+  more MCP gates as a proper multi-tool puzzle; the "couple not printed yet"
+  [REDACTED] NPCs could resolve to real names once the embargo lifts.
+- **Roster fidelity:** companies are fantasy-pun reskins; speaker first names keep
+  one letter flipped (Lélio→Lélia, Jeroen→Jeroan, Sébastien→Sébastier, Romain→
+  Romair, Alexandre→Alexandro, David→Davod, Filip→Filop, Laurent→Lauront).

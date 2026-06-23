@@ -71,7 +71,9 @@ export default class MenuScene extends Phaser.Scene {
   }
 
   isOpen(c) {
-    return c.playable && (c.id === 'inter-net' || Save.hasLanyard(c.id));
+    if (!c.playable) return false;
+    if (!c.requires) return true;            // e.g. inter-net is always open
+    return Save.hasLanyard(c.requires);      // unlocked once the prereq Lanyard is earned
   }
 
   renderList() {

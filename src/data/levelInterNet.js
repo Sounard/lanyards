@@ -12,8 +12,25 @@ import { TKEY } from '../config.js';
 export const LEVEL_INTERNET = {
   id: 'inter-net',
   title: 'inter-net',
+  lanyardNo: 1,
   world: { w: 1280, h: 4900 },
   spawn: { x: 640, y: 180 },
+  meterLabel: 'BANDWIDTH',
+  intro: 'CONNECTED. descend to the sea. press E to speak, J to swing.',
+  pitMsg: '404 // NOT FOUND. respawning at last floppy.',
+  completeNote: ['   you are logged on. the conferences', '   await. (more levels unlock as you', '   earn their Lanyards.)'],
+
+  // background ASCII flavour (no mechanics)
+  flavor: [
+    { y: 300,  s: 'C:\\> _' },
+    { y: 920,  s: 'PRESS ANY KEY' },
+    { y: 1560, s: 'NO CARRIER' },
+    { y: 1700, s: 'MOSAIC v0.9 loading...' },
+    { y: 2360, s: 'blink blink blink' },
+    { y: 3180, s: '~~~ sea of bits ~~~' },
+    { y: 3700, s: 'deeper = better loot' },
+    { y: 4100, s: 'gopher://port/1/' }
+  ],
 
   // Vertical layer bands — used for the descending flavour labels / parallax.
   layers: [
@@ -81,7 +98,16 @@ export const LEVEL_INTERNET = {
   ],
 
   // The signature beat: jump in ON PURPOSE → hidden void room → reward.
-  devnull: { x: 1200, y: 4450, w: 120, h: 170 },
+  secret: {
+    x: 1200, y: 4450, w: 120, h: 170,
+    label: '/dev/null',
+    type: 'amber',
+    bonus: 25,
+    returnPos: { x: 980, y: 4250 },
+    lines: ['you have reached /dev/null.', 'everything written here is discarded.', 'except, apparently, you.'],
+    rewardText: 'the AMBER phosphor palette',
+    returnMsg: '/dev/null gave back: +25 packets & the AMBER palette (toggle in menu).'
+  },
 
   // NPCs {id, x, y, key, dialogue}.
   npcs: [

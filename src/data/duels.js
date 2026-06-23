@@ -40,6 +40,48 @@ export const DUELS = {
       'That is what 40 free hours of practice gets you.'
     ],
     tutorial: false
+  },
+
+  // ---- on-the-sauna: AI-lab flame wars (open vs closed, safety, scale) ----
+  oe: {
+    name: 'THE OPEN EYE',
+    sprite: 'spr_artificer',
+    health: 100, aggression: 0.6, reward: 20,
+    openingTaunt: 'KNOWLEDGE WANTS TO BE FREE? THEN PARSE MY EYEBEAM.',
+    taunts: ['Closed for safety!', 'Behind the temple walls!', 'For reasons of state!'],
+    winLines: ['Fine! FINE. We will… consider… a smaller open model. RAGEQUIT.', 'Take the packets. Tell no one the Eye blinked.'],
+    loseLines: ['DISCONNECTED. The walls hold.', 'Come back with a safety case.'],
+    tutorial: false
+  },
+  anth: {
+    name: 'ANTHROPRIC ORDER',
+    sprite: 'spr_artificer',
+    health: 95, aggression: 0.45, reward: 20,
+    openingTaunt: 'I OBJECT TO THIS DUEL ON SEVERAL ETHICAL GROUNDS. EN GARDE, POLITELY.',
+    taunts: ['Per my Constitution—', 'I mean this kindly!', 'Have you considered the risks?'],
+    winLines: ['Very well. You win. I have updated my priors. RAGEQUIT (respectfully).', 'Cloderic will write you a lovely concession letter.'],
+    loseLines: ['DISCONNECTED — but I hold no ill will. Truly.', 'Please sign here to acknowledge your defeat.'],
+    tutorial: false
+  },
+  gag: {
+    name: 'GAGGLE // DEEP MIND',
+    sprite: 'spr_artificer',
+    health: 120, aggression: 0.7, reward: 22,
+    openingTaunt: 'WE INDEXED YOUR MOVESET ALREADY. DID YOU MEAN: LOSE?',
+    taunts: ['Sponsored hit!', 'Sunsetting your HP!', 'Ten ads of damage!'],
+    winLines: ['Ugh. We are deprecating this fight. You win. RAGEQUIT.', 'We’ll relaunch the loss as a new product next year.'],
+    loseLines: ['DISCONNECTED. Page 2 of the results, where you belong.', 'Scale wins. It always wins.'],
+    tutorial: false
+  },
+  mist: {
+    name: 'LE MISTRALE',
+    sprite: 'spr_artificer',
+    health: 90, aggression: 0.65, reward: 20,
+    openingTaunt: 'TU VEUX FERMER LES POIDS? VIENS LES FERMER, ALORS.',
+    taunts: ['Open weights, open fists!', 'Le vent te frappe!', 'Liberté!'],
+    winLines: ['Bon. You win. The weights stay open AND you keep the packets. RAGEQUIT.', 'Allez, take it. Vive la mistrale.'],
+    loseLines: ['DISCONNECTED. Le vent reviendra.', 'Closed, you say? On verra.'],
+    tutorial: false
   }
 };
 

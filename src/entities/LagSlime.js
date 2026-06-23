@@ -11,12 +11,14 @@ export default class LagSlime extends Phaser.Physics.Arcade.Sprite {
     const gen = opts.gen || 0;
     const maxGen = opts.maxGen != null ? opts.maxGen : 1;
     const big = gen === 0;
-    super(scene, x, y, big ? TKEY.slime : TKEY.slimeSmall);
+    const skin = opts.skin || { big: TKEY.slime, small: TKEY.slimeSmall };
+    super(scene, x, y, big ? skin.big : skin.small);
     scene.add.existing(this);
     scene.physics.add.existing(this);
 
     this.gen = gen;
     this.maxGen = maxGen;
+    this.skin = skin;
     this.body.setGravityY(PHYS.gravity);
     this.body.setSize(this.width - 4, this.height - 2);
     this.setDepth(15);
@@ -51,7 +53,7 @@ export default class LagSlime extends Phaser.Physics.Arcade.Sprite {
       for (const d of [-1, 1]) {
         const kid = new LagSlime(this.scene, this.x + d * 10, this.y - 6, {
           gen: this.gen + 1, maxGen: this.maxGen, dir: d,
-          patrol: this.patrol
+          patrol: this.patrol, skin: this.skin
         });
         kid.setVelocityY(-160);
         group.add(kid);

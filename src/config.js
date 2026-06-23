@@ -63,5 +63,18 @@ export const TKEY = {
   pointer: 'spr_pointer',
   slash: 'spr_slash',
   spark: 'spr_spark',
-  fighter: 'spr_fighter'
+  fighter: 'spr_fighter',
+
+  // on-the-sauna additions
+  wood: 'tile_wood',
+  gate: 'tex_gate',
+  socket: 'tex_socket',
+  agent: 'spr_agent',
+  bot: 'spr_bot',
+  botSmall: 'spr_bot_small',
+  artificer: 'spr_artificer',
+  golem: 'spr_golem',
+  warden: 'spr_warden',
+  patron: 'spr_patron',
+  beast: 'spr_beast'
 };

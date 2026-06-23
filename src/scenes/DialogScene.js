@@ -165,10 +165,11 @@ export default class DialogScene extends Phaser.Scene {
     const o = this.opts[this.sel]._opt;
     if (!o) return;
     sfx.blip();
+    if (o.grant && this.data.onGrant) this.data.onGrant(o.grant);   // side effect (e.g. agent)
     if (o.duel) { sfx.flame(); this.data.onDuel(o.duel); return; }   // level stops this scene
     if (o.shop) { this.showShop(); return; }
-    if (o.end) { this.close(); return; }
     if (o.to) { this.showNode(o.to); return; }
+    this.close();   // grant-only or end → close
   }
 
   showRoot() { this.showNode(this.tree.start); }

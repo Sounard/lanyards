@@ -6,6 +6,7 @@
 
 export const CONFERENCES = [
   { id: 'inter-net',   name: 'inter-net',              real: '(tutorial)',        feel: "1990 fishermen's port; first time online", scene: 'InterNetScene', playable: true },
+  { id: 'on-the-sauna',name: 'on-the-sauna',           real: 'Off the Radar (Brussels)', feel: 'hidden AI conclave in a bath-house; post-singularity 2026; labs as artificers, agents as homunculi', scene: 'OnTheSaunaScene', playable: true, requires: 'inter-net' },
   { id: 'webb-summit', name: 'Webb Summit',            real: 'Web Summit',        feel: 'spider-web metropolis of frantic web-weavers', playable: false },
   { id: 'interstolar', name: 'Interstolar',            real: 'Intersolar',        feel: 'earnest solar-druids; bright, hopeful, utopian', playable: false },
   { id: 'foss-fae',    name: 'Foss-Fae',               real: 'FOSDEM',            feel: 'Free Folk & hearth-daemons; chaotic-good gift economy', playable: false },

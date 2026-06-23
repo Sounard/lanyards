@@ -2,10 +2,12 @@
 
 A funny, very playable **2D side-view platformer roguelike-RPG** where the meta-
 theme — *going to tech conferences* — is reskinned as **medieval fantasy**. Clear
-a level, earn a **Lanyard**, and Lanyards unlock secret conference levels. This
-first shot ships one fully playable level: **inter-net**, a 1990 fishermen's port
-that is your first time online — rendered entirely in green-phosphor CRT glow,
-opening on a fake BIOS boot and a dial-up handshake screech.
+a level, earn a **Lanyard**, and Lanyards unlock conference levels. Two levels
+ship today: **inter-net** (a 1990 fishermen's port — your first time online) and
+**on-the-sauna** (a hidden, post-singularity AI conclave in a Brussels bath-house
+— a parody of the *Off the Radar* event, with the labs as artificers and agents
+as homunculi). Both rendered in green-phosphor CRT glow, opening on a fake BIOS
+boot and a dial-up handshake screech.
 
 ## Run it
 
@@ -62,15 +64,19 @@ src/
   ui.js              terminal text / panels / typewriter / ████ bars
   pipelines/CRTPipeline.js   green-phosphor post-FX (scanlines, curvature, bloom)
   audio/sfx.js       Web Audio: dial-up handshake + blips (no asset files)
-  entities/          Player, LagSlime
-  data/              conferences, level layout, dialogue, duel configs
+  entities/          Player, LagSlime, Agent (familiar)
+  data/              conferences, level layouts, dialogue, duel configs
   scenes/            Preload, Boot (cold open), Menu (world map),
-                     InterNet (level), UI (HUD), Dialog, Duel, Void (/dev/null)
+                     LevelScene (data-driven base), InterNet + OnTheSauna
+                     (thin subclasses), UI (HUD), Dialog, Duel, Void (secret room)
 ```
 
-**Adding a conference level later** = add a scene + a data file (copy
-`data/levelInterNet.js`), register the scene in `main.js`, and flip `playable`
-in `data/conferences.js`. No refactor. Swapping procedural art for real sprite
+**Adding a conference level** = add a data file (copy `data/levelInterNet.js`),
+a 3-line scene subclass of `LevelScene`, register it in `main.js`, and add the
+entry (with `requires:` prereq) in `data/conferences.js`. No engine changes —
+`LevelScene` builds everything from data, and optional sections light up extra
+mechanics (water/dive, nets, MCP gates/sockets, an Agent familiar, enemy skins,
+a secret reward room). Swapping procedural art for real sprite
 sheets = load them under the same `TKEY` keys. See `IDEAS_BACKLOG.md` and
 `CONFERENCES.md` for the design docs.
 
