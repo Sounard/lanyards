@@ -76,7 +76,16 @@ export default class LevelScene extends Phaser.Scene {
     this.scene.bringToTop('UIScene');
     this.pushHud();
 
-    if (L.intro) this.flash(L.intro);
+    // optional guided tutorial (inter-net only)
+    this.tut = null;
+    if (L.tutorial) {
+      this.tut = { step: 0, moved: false, jumped: false, talked: false, packets: 0, doneAt: this.time.now + 300 };
+      this.tutBanner = text(this, VIEW.W / 2, 92, '', { size: 15, color: COL.glow, origin: 0.5 });
+      this.tutBanner.setScrollFactor(0).setDepth(60).setAlign('center');
+      this.showTutStep(0);
+    } else if (L.intro) {
+      this.flash(L.intro);
+    }
   }
 
   // ---------------- world construction ----------------
@@ -267,8 +276,10 @@ export default class LevelScene extends Phaser.Scene {
       attackPressed: Phaser.Input.Keyboard.JustDown(k.J) || Phaser.Input.Keyboard.JustDown(k.F)
     };
 
+    const wasGrounded = p.grounded;
     p.control(input, { onNet, inWater }, time);
     if (this.agent) this.agent.follow(p, dtMs);
+    if (this.tut) this.updateTutorial(input, wasGrounded);
 
     if (input.attackPressed) this.doAttack(time);
     if (Phaser.Input.Keyboard.JustDown(k.E)) this.tryInteract(time);
@@ -316,6 +327,7 @@ export default class LevelScene extends Phaser.Scene {
 
   collectPacket(value, x, y) {
     this.coins += value; this.earned += value;
+    if (this.tut) this.tut.packets++;
     sfx.packet();
     const t = text(this, x, y, `+${value}`, { size: 13, color: COL.glow, origin: 0.5 });
     this.tweens.add({ targets: t, y: y - 24, alpha: 0, duration: 500, onComplete: () => t.destroy() });
@@ -399,6 +411,7 @@ export default class LevelScene extends Phaser.Scene {
   }
 
   openDialog(dialogueKey) {
+    if (this.tut) this.tut.talked = true;
     this.scene.pause();
     this.scene.launch('DialogScene', {
       dialogueKey,
@@ -525,6 +538,50 @@ export default class LevelScene extends Phaser.Scene {
     this.scene.pause();
     this.scene.launch('HelpScene', { from: this.scene.key });
     this.scene.bringToTop('HelpScene');
+  }
+
+  // ---------------- guided tutorial ----------------
+
+  showTutStep(i) {
+    const s = this.L.tutorial[i];
+    if (!s || !this.tutBanner) return;
+    this.tutBanner.setText('» ' + s.msg).setColor(COL.glow).setAlpha(1);
+  }
+
+  updateTutorial(input, wasGrounded) {
+    const t = this.tut;
+    if (input.left || input.right) t.moved = true;
+    if (input.jumpPressed && wasGrounded) t.jumped = true;
+
+    const s = this.L.tutorial[t.step];
+    if (!s || this.time.now < t.doneAt) return;
+
+    let done = false;
+    switch (s.done) {
+      case 'movejump': done = t.moved && t.jumped; break;
+      case 'talk':     done = t.talked; break;
+      case 'packets':  done = t.packets >= (s.arg || 1); break;
+      case 'descend':  done = this.player.y > (s.arg || 1700); break;
+    }
+    if (done) this.advanceTut();
+  }
+
+  advanceTut() {
+    const t = this.tut;
+    t.step++;
+    t.doneAt = this.time.now + 600;
+    if (t.step < this.L.tutorial.length) {
+      sfx.save();
+      this.tutBanner.setText('» ok').setColor(COL.glow);
+      this.time.delayedCall(500, () => { if (this.tut) this.showTutStep(this.tut.step); });
+    } else {
+      sfx.secret();
+      this.tutBanner.setText('» tutorial complete — descend and earn your Lanyard').setAlpha(1);
+      this.time.delayedCall(2600, () => {
+        if (this.tutBanner) this.tweens.add({ targets: this.tutBanner, alpha: 0, duration: 700 });
+      });
+      this.tut = null;
+    }
   }
 
   quitToMenu() {

@@ -16,8 +16,16 @@ export const LEVEL_INTERNET = {
   world: { w: 1280, h: 4900 },
   spawn: { x: 640, y: 180 },
   meterLabel: 'BANDWIDTH',
-  intro: 'CONNECTED. descend to the sea. press E to speak, J to swing.',
   pitMsg: '404 // NOT FOUND. respawning at last floppy.',
+
+  // Guided tutorial — a sticky top banner that advances as the player actually
+  // does each thing (move+jump -> talk -> collect a packet -> head for the exit).
+  tutorial: [
+    { msg: 'MOVE  ← →      JUMP  ↑   (or W / Space)', done: 'movejump' },
+    { msg: 'The KEEPER is right beside you — press  E  to talk.', done: 'talk' },
+    { msg: 'PACKETS are your currency — grab one (the blinking pickups).', done: 'packets', arg: 1 },
+    { msg: 'DESCEND ↓  to the bottom and reach the EXIT for LANYARD #1.', done: 'descend', arg: 1700 }
+  ],
   completeNote: ['   you are logged on. the conferences', '   await. (more levels unlock as you', '   earn their Lanyards.)'],
 
   // background ASCII flavour (no mechanics)
