@@ -8,6 +8,7 @@ import Player from '../entities/Player.js';
 import LagSlime from '../entities/LagSlime.js';
 import Agent from '../entities/Agent.js';
 import { getDuel } from '../data/duels.js';
+import { setUrl } from '../router.js';
 
 // Data-driven base level. Each concrete level is a thin subclass that returns a
 // level-data object from levelData(); the world is built entirely from that data
@@ -22,6 +23,8 @@ export default class LevelScene extends Phaser.Scene {
   create() {
     this.L = this.levelData();
     const L = this.L;
+    Save.markVisited(L.id);   // entering by menu or deep link unlocks it in the menu (V1)
+    setUrl(L.id);             // shareable address bar, e.g. /on-the-sauna
     this.skin = Object.assign({ block: TKEY.block, enemyBig: TKEY.slime, enemySmall: TKEY.slimeSmall }, L.skin || {});
 
     this.finished = false;
@@ -499,6 +502,7 @@ export default class LevelScene extends Phaser.Scene {
     if (this.finished) return;
     this.finished = true;
     Save.awardLanyard(this.L.id);
+    Save.markCompleted(this.L.id);
     Save.recordRun(this.earned);
     sfx.secret();
     this.player.setVelocity(0, 0);
@@ -586,6 +590,7 @@ export default class LevelScene extends Phaser.Scene {
 
   quitToMenu() {
     Save.recordRun(this.earned);
+    setUrl('');   // back to the map at /
     this.scene.stop('UIScene');
     this.scene.start('MenuScene');
   }

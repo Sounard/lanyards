@@ -4,6 +4,7 @@ import { text, panel, COL, FONT } from '../ui.js';
 import { applyCRT } from '../main.js';
 import { sfx } from '../audio/sfx.js';
 import * as Save from '../save.js';
+import { setUrl } from '../router.js';
 import { CONFERENCES } from '../data/conferences.js';
 
 // Title + world map. Lists every conference; only those with a playable scene
@@ -20,9 +21,11 @@ const TITLE = [
 export default class MenuScene extends Phaser.Scene {
   constructor() { super('MenuScene'); }
 
-  create() {
+  create(data) {
     applyCRT(this);
     this.cameras.main.setBackgroundColor(COL.bg);
+    this.badRoute = data && data.badRoute;
+    setUrl('');   // the map lives at /
     const cx = VIEW.W / 2;
 
     // title
@@ -65,6 +68,9 @@ export default class MenuScene extends Phaser.Scene {
     this.status = text(this, cx, 522, '', { size: 13, color: COL.glow, origin: 0.5 });
 
     this.renderList();
+    if (this.badRoute) {
+      this.status.setText(`>> "${this.badRoute}" is not a level — choose one below.`).setColor(COL.bright);
+    }
 
     // input
     this.input.keyboard.on('keydown', e => this.onKey(e));
@@ -72,8 +78,8 @@ export default class MenuScene extends Phaser.Scene {
 
   isOpen(c) {
     if (!c.playable) return false;
-    if (!c.requires) return true;            // e.g. inter-net is always open
-    return Save.hasLanyard(c.requires);      // unlocked once the prereq Lanyard is earned
+    if (!c.requires) return true;                              // e.g. inter-net is always open
+    return Save.hasLanyard(c.requires) || Save.isVisited(c.id); // prereq Lanyard OR already entered (V1: deep links unlock)
   }
 
   renderList() {
@@ -86,7 +92,9 @@ export default class MenuScene extends Phaser.Scene {
       t.setColor(sel ? COL.glow : (t._open ? COL.bright : COL.mid));
     });
     const c = this.items[this.idx]._conf;
-    this.status.setText(`${c.real}  —  ${c.feel}`);
+    let s = `${c.real}  —  ${c.feel}`;
+    if (c.playable) s += `   ·   play.lanyards.lol/${c.id}`;
+    this.status.setText(s).setColor(COL.glow);
   }
 
   onKey(e) {

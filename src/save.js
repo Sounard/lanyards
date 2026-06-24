@@ -5,6 +5,8 @@ const KEY = 'lanyards_and_dragons_save_v1';
 
 const DEFAULT = {
   lanyards: [],          // ids of conferences cleared, e.g. ['inter-net']
+  visited: [],           // ids of levels entered (by menu or deep link)
+  completed: [],         // ids of levels reached-the-exit (may differ from lanyards later)
   unlocks: {
     amberPalette: false  // granted by the /dev/null secret
   },
@@ -47,6 +49,24 @@ export function awardLanyard(id) {
   const s = load();
   if (!s.lanyards.includes(id)) s.lanyards.push(id);
   save();
+}
+
+export function markVisited(id) {
+  const s = load();
+  if (!s.visited.includes(id)) { s.visited.push(id); save(); }
+}
+
+export function isVisited(id) {
+  return load().visited.includes(id);
+}
+
+export function markCompleted(id) {
+  const s = load();
+  if (!s.completed.includes(id)) { s.completed.push(id); save(); }
+}
+
+export function isCompleted(id) {
+  return load().completed.includes(id);
 }
 
 export function unlock(key) {

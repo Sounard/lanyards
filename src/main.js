@@ -66,4 +66,8 @@ export function applyCRT(scene) {
   } catch (e) { /* flat render is fine */ }
 }
 
+// Back/forward buttons change the path; simplest correct behaviour is to
+// re-boot so the router (in PreloadScene) re-reads the new path.
+window.addEventListener('popstate', () => location.reload());
+
 window.__LD = game; // handy for debugging in the console
