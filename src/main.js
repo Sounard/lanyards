@@ -13,6 +13,8 @@ import DialogScene from './scenes/DialogScene.js';
 import DuelScene from './scenes/DuelScene.js';
 import VoidScene from './scenes/VoidScene.js';
 import HelpScene from './scenes/HelpScene.js';
+import PassportScene from './scenes/PassportScene.js';
+import FormScene from './scenes/FormScene.js';
 
 const save = Save.load();
 
@@ -32,7 +34,7 @@ const config = {
     default: 'arcade',
     arcade: { gravity: { y: 0 }, debug: false }
   },
-  scene: [PreloadScene, BootScene, MenuScene, InterNetScene, OnTheSaunaScene, UIScene, DialogScene, DuelScene, VoidScene, HelpScene]
+  scene: [PreloadScene, BootScene, MenuScene, InterNetScene, OnTheSaunaScene, UIScene, DialogScene, DuelScene, VoidScene, HelpScene, PassportScene, FormScene]
 };
 
 const game = new Phaser.Game(config);

@@ -9,6 +9,7 @@ import LagSlime from '../entities/LagSlime.js';
 import Agent from '../entities/Agent.js';
 import { getDuel } from '../data/duels.js';
 import { setUrl } from '../router.js';
+import * as Telemetry from '../telemetry.js';
 
 // Data-driven base level. Each concrete level is a thin subclass that returns a
 // level-data object from levelData(); the world is built entirely from that data
@@ -25,6 +26,7 @@ export default class LevelScene extends Phaser.Scene {
     const L = this.L;
     Save.markVisited(L.id);   // entering by menu or deep link unlocks it in the menu (V1)
     setUrl(L.id);             // shareable address bar, e.g. /on-the-sauna
+    Telemetry.track('level_started', { level: L.id });
     this.skin = Object.assign({ block: TKEY.block, enemyBig: TKEY.slime, enemySmall: TKEY.slimeSmall }, L.skin || {});
 
     this.finished = false;
@@ -410,6 +412,7 @@ export default class LevelScene extends Phaser.Scene {
   grantAgent(announce = true) {
     if (this.agent) return;
     this.agent = new Agent(this, this.player.x, this.player.y - 40);
+    Save.addCollectible('agent');
     if (announce) this.flash('an AGENT joins you. it fetches packets nearby.');
   }
 
@@ -457,6 +460,8 @@ export default class LevelScene extends Phaser.Scene {
     this.scene.resume();
     this.dialogLock = this.time.now + 400;
     this.coins += reward; this.earned += reward;
+    Save.addCollectible('flamewar');
+    Telemetry.track('duel_won', { level: this.L.id });
     this.flash(`${cfg.name} RAGEQUIT. +${reward} packets.`);
   }
 
@@ -484,7 +489,9 @@ export default class LevelScene extends Phaser.Scene {
       bonus: d.bonus || 25,
       alreadyHave: d.type === 'amber' ? Save.isUnlocked('amberPalette') : false,
       onReturn: (bonus) => {
-        if (d.type === 'amber') Save.unlock('amberPalette');
+        Save.addCollectible('secret');
+        Telemetry.track('secret_found', { level: this.L.id });
+        if (d.type === 'amber') { Save.unlock('amberPalette'); Save.addCollectible('amber'); }
         if (d.type === 'agent') this.grantAgent(false);
         this.coins += bonus; this.earned += bonus;
         if (d.returnPos) { this.player.setPosition(d.returnPos.x, d.returnPos.y); this.player.setVelocity(0, 0); }
@@ -503,27 +510,38 @@ export default class LevelScene extends Phaser.Scene {
     this.finished = true;
     Save.awardLanyard(this.L.id);
     Save.markCompleted(this.L.id);
+    Save.addCollectible('clear-' + this.L.id);
     Save.recordRun(this.earned);
+    Telemetry.track('level_completed', { level: this.L.id, packets: this.earned });
     sfx.secret();
     this.player.setVelocity(0, 0);
     this.player.body.setAllowGravity(false);
 
     const cx = VIEW.W / 2, cy = VIEW.H / 2;
-    panel(this, cx - 260, cy - 140, 520, 280).setScrollFactor(0).setDepth(100);
+    panel(this, cx - 260, cy - 150, 520, 300).setScrollFactor(0).setDepth(100);
     const note = this.L.completeNote || ['   you are logged on. more conferences', '   await as you earn their Lanyards.'];
     const lines = [
       `*** LANYARD #${this.L.lanyardNo} ACQUIRED ***`, '',
       `   ${this.L.title} // CLEARED`,
       `   packets routed: ${this.earned}`, '',
       ...note, '',
-      '   press ENTER to return to the map'
+      '   ENTER  map      P  passport      G  join the guild'
     ];
-    this.add.text(cx, cy, lines.join('\n'), {
+    this.add.text(cx, cy - 6, lines.join('\n'), {
       fontFamily: FONT, fontSize: '15px', color: COL.glow, align: 'center', lineSpacing: 4
     }).setOrigin(0.5).setScrollFactor(0).setDepth(101);
 
-    this.input.keyboard.once('keydown-ENTER', () => this.quitToMenu());
-    this.input.keyboard.once('keydown-SPACE', () => this.quitToMenu());
+    // guarded so they don't fire while the Guild form / help overlay is up
+    this.input.keyboard.on('keydown', e => {
+      if (!this.scene.isActive()) return;
+      if (e.key === 'Enter' || e.key === ' ') this.quitToMenu();
+      else if (e.key === 'p' || e.key === 'P') { this.scene.stop('UIScene'); this.scene.start('PassportScene'); }
+      else if (e.key === 'g' || e.key === 'G') {
+        this.scene.pause();
+        this.scene.launch('FormScene', { mode: 'contact', from: this.scene.key });
+        this.scene.bringToTop('FormScene');
+      }
+    });
   }
 
   gameOver() {

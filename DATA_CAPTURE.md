@@ -29,20 +29,25 @@ network. Already started (`lanyards`, `visited`, `completed`, `bestPackets`,
 
 ---
 
-## 2. Where to send B (pick one to start)
+## 2. Where to send B (Make.com is OUT — too buggy)
 
 | Option | Effort | Own the data? | Good for | Notes |
 |---|---|---|---|---|
-| **Make.com webhook** ⭐ | low | yes | events + suggestions + contacts | team already uses Make; one `fetch()` → Make routes to Sheet/Airtable/email/Slack. Can scaffold via the Make MCP. |
-| No-code form (Tally / Airtable / Formspree) | lowest | yes | suggestions + contacts only | link or embed; no events; fastest for the two forms. |
-| Cloudflare Worker + KV/D1 | med | yes | events + **leaderboards** + cloud profile | own API at `api.lanyards.lol`; best if you want leaderboards/sync later. |
-| Supabase / Firebase | med | yes | structured DB + auth + realtime | if you want accounts / cloud profiles. |
+| **Cloudflare Worker + D1/KV** ⭐ | med | yes | events + suggestions + contacts + **leaderboards** | own API at `api.lanyards.lol`; free tier; CORS easy; ~30-line `fetch` handler that inserts into D1 (SQLite). Grows into leaderboards / cloud sync. Best all-rounder. |
+| **Supabase** | med | yes | structured DB + auth + **GDPR delete UI** | hosted Postgres + auto REST + row-level security + a table dashboard; nicest for contacts (built-in delete) and if you ever want accounts. Generous free tier. |
+| **Google Apps Script → Sheet** | lowest | yes | suggestions + contacts | you have Google Drive; a ~20-line `doPost` appends to a Sheet, deploy as a Web App. Zero infra/cost. Use `text/plain` body to dodge CORS preflight. Weaker for high-volume telemetry. |
+| No-code form (Tally / Airtable / Formspree) | lowest | yes | suggestions + contacts only | link/embed; no custom events. |
+| Val.town / Pipedream | low | yes | a quick hosted function | middle ground if you don't want a CF account. |
 
-**Recommendation:** start with a **Make webhook** as a single ingest endpoint for
-all three streams (you already run Make, minimal client code, easy fan-out).
-Graduate to a **Cloudflare Worker** when you want leaderboards / cloud sync.
+**Recommendation:** a **Cloudflare Worker + D1** as the single ingest endpoint —
+own the data, free, scales to leaderboards, and the client already speaks plain
+JSON to one URL. If you want a click-through GDPR-delete dashboard for contacts,
+use **Supabase** instead (or alongside, just for contacts). For a 10-minute MVP,
+**Apps Script → Google Sheet** works today.
 
-One endpoint, `type`-switched payloads:
+The client is endpoint-agnostic: set `ENDPOINT` in `src/telemetry.js` to the URL
+and everything queued in `localStorage` starts flushing. One `type`-switched
+payload (`kind`: `event` | `suggestion` | `contact`):
 ```json
 { "type":"level_completed", "clientId":"…", "level":"on-the-sauna", "packets":42, "ms":123456, "v":"0.1", "ts":… }
 { "type":"suggestion", "clientId":"…", "text":"NeurIPS", "handle":"", "ts":… }
@@ -80,15 +85,20 @@ One endpoint, `type`-switched payloads:
 ## 5. Phased plan
 
 - **Phase 1 — shipped:** deep-link URLs (`/on-the-sauna`) + expanded local profile
-  (`visited` / `completed`). Foundation for the Passport and telemetry payloads.
-- **Phase 2:** collectibles registry in `save.js` + a **Passport / Lanyard-wall**
-  menu screen (client-only, no network).
-- **Phase 3:** `src/telemetry.js` (consent-gated, fire-and-forget POST) + a Make
-  webhook; wire `level_completed` / `secret_found` / `collectible` events and the
-  **"Suggest a con"** in-game form.
-- **Phase 4:** consented **contact** capture form + privacy note.
-- **Phase 5 (optional):** Cloudflare Worker backend → leaderboards, cloud profile
-  sync, shareable run pages.
+  (`visited` / `completed`).
+- **Phase 2 — shipped:** collectibles registry (`data/collectibles.js`, `save.js`)
+  + the **Passport / Lanyard-wall** screen (`PassportScene`, key `P` from the map),
+  with **p5.js** cute icons (`p5assets.js`, Phaser-drawn fallback). Client-only.
+- **Phase 3 — shipped (client side):** `src/telemetry.js` — anonymous `clientId`,
+  consent toggle, `localStorage` queue, fire-and-forget POST. Events wired:
+  `level_started` / `level_completed` / `secret_found` / `duel_won`. **SUBMIT A CON**
+  and **JOIN THE GUILD** flows live (`FormScene`). *Pending:* set `ENDPOINT` to a
+  real URL (Cloudflare Worker) so the queue actually sends.
+- **Phase 4 — shipped (client side):** consented **contact** capture (email-only,
+  TAB-to-consent, erasable via `forgetContact`) + privacy notes in-UI.
+- **Phase 5 (next / optional):** stand up the **Cloudflare Worker + D1** endpoint,
+  set `ENDPOINT`, then build leaderboards / shareable run pages / cloud sync.
 
-> Next concrete step when ready: stand up the Make webhook (can be scaffolded via
-> the Make MCP), add `src/telemetry.js`, and ship the "Suggest a con" form.
+> Next concrete step: create the Worker (`POST /collect` → insert batch into D1),
+> bind it to `api.lanyards.lol`, set `ENDPOINT` in `src/telemetry.js`. Everything
+> queued in players' browsers flushes on their next event.

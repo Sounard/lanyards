@@ -63,7 +63,7 @@ export default class MenuScene extends Phaser.Scene {
 
     // footer / controls
     this.hint = text(this, cx, 500,
-      '↑↓←→ move   ENTER play   ? help   A amber   C crt   R reset',
+      '↑↓←→ move   ENTER play   P passport   ? help   A amber   C crt   R reset',
       { size: 13, color: COL.mid, origin: 0.5 });
     this.status = text(this, cx, 522, '', { size: 13, color: COL.glow, origin: 0.5 });
 
@@ -106,6 +106,7 @@ export default class MenuScene extends Phaser.Scene {
     else if (e.key === 'ArrowRight') { this.idx = Math.min(this.items.length - 1, this.idx + 1); sfx.blip(); this.renderList(); }
     else if (e.key === 'ArrowLeft') { this.idx = Math.max(0, this.idx - 1); sfx.blip(); this.renderList(); }
     else if (e.key === 'Enter') this.choose();
+    else if (e.key === 'p' || e.key === 'P') { sfx.blip(); this.scene.start('PassportScene'); }
     else if (e.key === 'a' || e.key === 'A') this.toggleAmber();
     else if (e.key === 'c' || e.key === 'C') this.toggleCrt();
     else if (e.key === 'r' || e.key === 'R') this.resetSave();
