@@ -1,0 +1,13 @@
+name = "lanyards-collect"
+main = "src/worker.js"
+compatibility_date = "2026-06-01"
+
+# Created with: wrangler d1 create lanyards
+# Paste the returned database_id below.
+[[d1_databases]]
+binding = "DB"
+database_name = "lanyards"
+database_id = "REPLACE_WITH_ID_FROM_d1_create"
+
+# ADMIN_KEY is a secret, set with: wrangler secret put ADMIN_KEY
+# (do NOT put it here)

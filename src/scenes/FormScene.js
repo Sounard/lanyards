@@ -41,7 +41,8 @@ export default class FormScene extends Phaser.Scene {
     if (!suggest) {
       this.consentText = text(this, 150, 292, '', { size: 13, color: COL.bright });
       this.paintConsent();
-      text(this, 150, 318, 'email only · unsubscribe anytime · never shared · TAB toggles consent', { size: 10, color: COL.mid });
+      text(this, 150, 316, 'sent over HTTPS to our server · NEVER stored in your browser', { size: 10, color: COL.mid });
+      text(this, 150, 330, 'leave & delete anytime (F in the Passport) · TAB toggles consent', { size: 10, color: COL.mid });
     } else {
       text(this, 150, 296, 'we read every suggestion. anonymous.', { size: 11, color: COL.mid });
     }
@@ -73,6 +74,7 @@ export default class FormScene extends Phaser.Scene {
   }
 
   submit() {
+    if (this.sending) return;
     if (this.mode === 'suggest') {
       if (!Telemetry.submitSuggestion(this.value)) { this.flash('type something first.'); return; }
       Save.addCollectible('contributor');
@@ -80,10 +82,16 @@ export default class FormScene extends Phaser.Scene {
       this.finish('thanks! logged. you earned the CONTRIBUTOR badge.');
     } else {
       if (!this.consent) { this.flash('tick consent (TAB) to join.'); return; }
-      if (!Telemetry.submitContact(this.value)) { this.flash('that email looks off.'); return; }
-      Save.addCollectible('guild');
-      sfx.win();
-      this.finish('welcome to the Guild. you earned the GUILD badge.');
+      if (!Telemetry.validEmail(this.value)) { this.flash('that email looks off.'); return; }
+      this.sending = true;
+      this.flash('sending…');
+      Telemetry.submitContact(this.value).then(res => {
+        this.sending = false;
+        if (!res.ok) { this.flash(res.error || 'failed — try again.'); return; }
+        Save.addCollectible('guild');
+        sfx.win();
+        this.finish('welcome to the Guild! email sent to the server — not kept on this device.');
+      });
     }
   }
 

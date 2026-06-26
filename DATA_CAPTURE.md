@@ -96,9 +96,22 @@ payload (`kind`: `event` | `suggestion` | `contact`):
   real URL (Cloudflare Worker) so the queue actually sends.
 - **Phase 4 — shipped (client side):** consented **contact** capture (email-only,
   TAB-to-consent, erasable via `forgetContact`) + privacy notes in-UI.
-- **Phase 5 (next / optional):** stand up the **Cloudflare Worker + D1** endpoint,
-  set `ENDPOINT`, then build leaderboards / shareable run pages / cloud sync.
+- **Phase 5 — shipped (code), deploy pending:** the **Cloudflare Worker + D1**
+  endpoint lives in `worker/` (`/collect`, `/stats`, GDPR `forget`). Deploy it
+  (see `worker/README.md`) and set the repo Variable `VITE_COLLECT_ENDPOINT` to
+  the `/collect` URL — the build inlines it and the queue starts flushing. Then:
+  leaderboards / shareable run pages / cloud sync.
 
-> Next concrete step: create the Worker (`POST /collect` → insert batch into D1),
-> bind it to `api.lanyards.lol`, set `ENDPOINT` in `src/telemetry.js`. Everything
-> queued in players' browsers flushes on their next event.
+## 6. Privacy model as built (important)
+
+- **Emails are NEVER stored in the browser** — not even encrypted. On Guild
+  signup the email is POSTed straight to the Worker (HTTPS) and only a random
+  **deletion token** is kept in `localStorage` (`save.guild.token`).
+- **Forget me** (F in the Passport) sends `{kind:'forget', token}` → the Worker
+  deletes that row; the local token + badge are cleared. No save wipe.
+- **Legacy migration:** any old `save.contact.email` is dropped on load.
+- **Telemetry + suggestions** are anonymous (random `clientId`) and queued in
+  `localStorage` for retry — no PII. Toggle in the Passport (`T`).
+- Email lands in **D1** (encrypted at rest) which you own; read via
+  `/stats?key=…` or `wrangler d1 execute`. Restrict CORS to `play.lanyards.lol`
+  in the Worker if you want.

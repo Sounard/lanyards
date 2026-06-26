@@ -9,7 +9,7 @@ const DEFAULT = {
   completed: [],         // ids of levels reached-the-exit (may differ from lanyards later)
   collectibles: [],      // ids of Passport collectibles earned (see data/collectibles.js)
   clientId: '',          // random anonymous id for telemetry (no PII)
-  contact: null,         // { email, ts } if the player joined the Guild
+  guild: null,           // { token, ts } if joined — a deletion token ONLY, never the email
   unlocks: {
     amberPalette: false  // granted by the /dev/null secret
   },
@@ -33,6 +33,13 @@ export function load() {
     // Re-merge nested defaults in case the schema grew.
     cache.unlocks = Object.assign(clone(DEFAULT.unlocks), cache.unlocks || {});
     cache.settings = Object.assign(clone(DEFAULT.settings), cache.settings || {});
+    // Privacy migration: older saves stored a plaintext email in `contact`.
+    // Drop it; keep only "joined" status (no token — it was never sent anyway).
+    if (cache.contact) {
+      cache.guild = cache.guild || { ts: cache.contact.ts || Date.now() };
+      delete cache.contact;
+      try { localStorage.setItem(KEY, JSON.stringify(cache)); } catch (e) { /* ignore */ }
+    }
   } catch (e) {
     cache = clone(DEFAULT);
   }
@@ -81,6 +88,12 @@ export function addCollectible(id) {
 
 export function hasCollectible(id) {
   return load().collectibles.includes(id);
+}
+
+export function removeCollectible(id) {
+  const s = load();
+  const i = s.collectibles.indexOf(id);
+  if (i >= 0) { s.collectibles.splice(i, 1); save(); }
 }
 
 // stable anonymous client id (no PII) for telemetry

@@ -4,6 +4,7 @@ import { text, panel, COL, FONT, isHelpKey } from '../ui.js';
 import { applyCRT } from '../main.js';
 import { sfx } from '../audio/sfx.js';
 import * as Save from '../save.js';
+import * as Telemetry from '../telemetry.js';
 import { generateP5Assets } from '../p5assets.js';
 import { COLLECTIBLES } from '../data/collectibles.js';
 
@@ -51,15 +52,30 @@ export default class PassportScene extends Phaser.Scene {
 
     // status / privacy
     const tele = save.settings.telemetry !== false;
+    const joined = !!save.guild;
     text(this, cx, 426,
-      `telemetry: ${tele ? 'ON' : 'OFF'} (anonymous, cookieless)    ·    ${save.contact ? 'Guild: ' + save.contact.email : 'not in the Guild'}`,
+      `telemetry: ${tele ? 'ON' : 'OFF'} (anonymous, cookieless)    ·    ${joined ? 'in the Guild ✓ (no email kept here)' : 'not in the Guild'}`,
       { size: 12, color: COL.bright, origin: 0.5 });
 
-    text(this, cx, 470, 'S  submit a con      G  join the guild      T  telemetry on/off', { size: 13, color: COL.glow, origin: 0.5 });
+    const guildKey = joined ? 'F  leave guild (delete my email)' : 'G  join the guild';
+    text(this, cx, 470, `S  submit a con      ${guildKey}      T  telemetry on/off`, { size: 13, color: COL.glow, origin: 0.5 });
     text(this, cx, 494, 'Esc  back to the map        ? / ,  help', { size: 12, color: COL.bright, origin: 0.5 });
+    this.note = text(this, cx, 516, '', { size: 11, color: COL.glow, origin: 0.5 });
 
     this.input.keyboard.on('keydown', e => this.onKey(e));
     this.events.on('resume', () => this.scene.restart());   // refresh after a form/help closes
+  }
+
+  flash(msg) {
+    this.note.setText(msg);
+    this.time.delayedCall(2200, () => { if (this.note) this.note.setText(''); });
+  }
+
+  forget() {
+    if (!Save.load().guild) { this.flash('you are not in the Guild.'); return; }
+    sfx.blip();
+    this.flash('leaving the Guild — deletion requested…');
+    Telemetry.forgetGuild().then(() => { Save.removeCollectible('guild'); this.scene.restart(); });
   }
 
   onKey(e) {
@@ -67,7 +83,8 @@ export default class PassportScene extends Phaser.Scene {
     const k = (e.key || '').toLowerCase();
     if (e.key === 'Escape') { sfx.blip(); this.scene.start('MenuScene'); }
     else if (k === 's') this.openForm('suggest');
-    else if (k === 'g') this.openForm('contact');
+    else if (k === 'g') { if (Save.load().guild) this.flash('already in the Guild — press F to leave.'); else this.openForm('contact'); }
+    else if (k === 'f') this.forget();
     else if (k === 't') this.toggleTelemetry();
     else if (isHelpKey(e)) { this.scene.pause(); this.scene.launch('HelpScene', { from: this.scene.key }); this.scene.bringToTop('HelpScene'); }
   }

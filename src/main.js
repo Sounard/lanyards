@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { VIEW, GREEN } from './config.js';
 import * as Save from './save.js';
+import * as Telemetry from './telemetry.js';
 import CRTPipeline from './pipelines/CRTPipeline.js';
 
 import PreloadScene from './scenes/PreloadScene.js';
@@ -57,6 +58,7 @@ game.events.once('ready', () => {
   }
   const pre = document.getElementById('preboot');
   if (pre) pre.remove();
+  Telemetry.flush();   // send any queued (non-PII) events/suggestions from past sessions
 });
 
 // Apply the CRT post-pipeline to a scene's main camera (call from create()).
