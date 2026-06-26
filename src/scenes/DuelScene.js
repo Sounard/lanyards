@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { VIEW, TKEY } from '../config.js';
-import { text, panel, bar, COL, FONT } from '../ui.js';
+import { text, panel, bar, COL, FONT, isHelpKey } from '../ui.js';
 import { applyCRT } from '../main.js';
 import { sfx } from '../audio/sfx.js';
 
@@ -43,12 +43,12 @@ export default class DuelScene extends Phaser.Scene {
     this.drawBars();
 
     text(this, VIEW.W / 2, VIEW.H - 26,
-      'MOVE ←→   J light   K heavy   L special   SPACE block', { size: 12, color: COL.dark, origin: 0.5 });
+      'MOVE ←→   J light   K heavy   L special   SPACE block', { size: 12, color: COL.mid, origin: 0.5 });
 
     this.cursors = this.input.keyboard.createCursorKeys();
     this.keys = this.input.keyboard.addKeys('J,K,L,SPACE,ENTER');
     this.input.keyboard.on('keydown', e => {
-      if ((e.key === '?' || e.key === 'h' || e.key === 'H') && this.scene.isActive()) {
+      if (isHelpKey(e) && this.scene.isActive()) {
         this.scene.pause();
         this.scene.launch('HelpScene', { from: this.scene.key });
         this.scene.bringToTop('HelpScene');
@@ -213,11 +213,12 @@ export default class DuelScene extends Phaser.Scene {
     const banner = win ? 'OPPONENT RAGEQUIT' : 'DISCONNECTED';
     win ? sfx.win() : sfx.lose();
 
-    panel(this, VIEW.W / 2 - 280, 150, 560, 200).setDepth(20);
-    text(this, VIEW.W / 2, 180, banner, { size: 30, color: COL.glow, origin: 0.5 });
-    text(this, VIEW.W / 2, 240, lines.join('\n'), { size: 15, color: COL.bright, origin: 0.5, align: 'center' })
-      .setAlign('center');
-    text(this, VIEW.W / 2, 320, 'press ENTER', { size: 14, color: COL.mid, origin: 0.5 });
+    panel(this, VIEW.W / 2 - 290, 146, 580, 210).setDepth(20);
+    text(this, VIEW.W / 2, 178, banner, { size: 30, color: COL.glow, origin: 0.5 }).setDepth(21);
+    text(this, VIEW.W / 2, 244, lines.join('\n'),
+      { size: 15, color: COL.glow, origin: 0.5, align: 'center', wrap: 520, lineSpacing: 6 })
+      .setDepth(21);
+    text(this, VIEW.W / 2, 328, 'press  ENTER', { size: 15, color: COL.bright, origin: 0.5 }).setDepth(21);
 
     this.input.keyboard.once('keydown-ENTER', () => this.finish(win));
     this.input.keyboard.once('keydown-SPACE', () => this.finish(win));

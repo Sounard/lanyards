@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { VIEW, TKEY } from '../config.js';
-import { text, panel, COL, FONT } from '../ui.js';
+import { text, panel, COL, FONT, isHelpKey } from '../ui.js';
 import { applyCRT } from '../main.js';
 import { sfx } from '../audio/sfx.js';
 import * as Save from '../save.js';
@@ -44,19 +44,19 @@ export default class PassportScene extends Phaser.Scene {
       img.setDisplaySize(44, 44);
       img.setAlpha(earned ? 1 : 0.18);
       if (earned) this.tweens.add({ targets: img, scale: img.scale * 1.08, duration: 1200, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
-      else text(this, x, y, '?', { size: 22, color: COL.dark, origin: 0.5 });
-      text(this, x, y + 30, earned ? c.name : '— locked —', { size: 11, color: earned ? COL.glow : COL.dark, origin: 0.5, align: 'center', wrap: cw - 16 });
-      if (earned) text(this, x, y + 46, c.hint, { size: 9, color: COL.mid, origin: 0.5, align: 'center', wrap: cw - 16 });
+      else text(this, x, y, '?', { size: 22, color: COL.mid, origin: 0.5 });
+      text(this, x, y + 30, earned ? c.name : '— locked —', { size: 12, color: earned ? COL.glow : COL.mid, origin: 0.5, align: 'center', wrap: cw - 16 });
+      if (earned) text(this, x, y + 48, c.hint, { size: 10, color: COL.bright, origin: 0.5, align: 'center', wrap: cw - 16 });
     });
 
     // status / privacy
     const tele = save.settings.telemetry !== false;
     text(this, cx, 426,
       `telemetry: ${tele ? 'ON' : 'OFF'} (anonymous, cookieless)    ·    ${save.contact ? 'Guild: ' + save.contact.email : 'not in the Guild'}`,
-      { size: 12, color: COL.mid, origin: 0.5 });
+      { size: 12, color: COL.bright, origin: 0.5 });
 
-    text(this, cx, 470, 'S  submit a con      G  join the guild      T  telemetry on/off', { size: 13, color: COL.bright, origin: 0.5 });
-    text(this, cx, 494, 'Esc  back to the map        ?  help', { size: 12, color: COL.mid, origin: 0.5 });
+    text(this, cx, 470, 'S  submit a con      G  join the guild      T  telemetry on/off', { size: 13, color: COL.glow, origin: 0.5 });
+    text(this, cx, 494, 'Esc  back to the map        ? / ,  help', { size: 12, color: COL.bright, origin: 0.5 });
 
     this.input.keyboard.on('keydown', e => this.onKey(e));
     this.events.on('resume', () => this.scene.restart());   // refresh after a form/help closes
@@ -69,7 +69,7 @@ export default class PassportScene extends Phaser.Scene {
     else if (k === 's') this.openForm('suggest');
     else if (k === 'g') this.openForm('contact');
     else if (k === 't') this.toggleTelemetry();
-    else if (k === '?' || k === 'h') { this.scene.pause(); this.scene.launch('HelpScene', { from: this.scene.key }); this.scene.bringToTop('HelpScene'); }
+    else if (isHelpKey(e)) { this.scene.pause(); this.scene.launch('HelpScene', { from: this.scene.key }); this.scene.bringToTop('HelpScene'); }
   }
 
   openForm(mode) {

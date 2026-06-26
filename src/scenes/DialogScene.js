@@ -60,7 +60,7 @@ export default class DialogScene extends Phaser.Scene {
     this.clearOpts();
     const ready = this.tw ? this.tw.done() : true;
     this.node.options.forEach((o, i) => {
-      const t = text(this, 92, this.optY + i * 24, '', { size: 14 });
+      const t = text(this, 92, this.optY + i * 26, '', { size: 14, wrap: VIEW.W - 210 });
       t._opt = o;
       this.opts.push(t);
     });
@@ -73,15 +73,15 @@ export default class DialogScene extends Phaser.Scene {
       const sel = i === this.sel;
       const prefix = sel ? '> ' : '  ';
       t.setText(prefix + o.text);
-      if (!ready) { t.setColor(COL.dark); return; }
+      if (!ready) { t.setColor(COL.mid); return; }
       // flame-bait tell: a hotter glow + flicker
       if (o.bait) {
-        t.setColor(sel ? COL.glow : COL.bright);
+        t.setColor(COL.glow);
         if (!t._flick) {
-          t._flick = this.tweens.add({ targets: t, alpha: 0.55, duration: 220, yoyo: true, repeat: -1 });
+          t._flick = this.tweens.add({ targets: t, alpha: 0.6, duration: 240, yoyo: true, repeat: -1 });
         }
       } else {
-        t.setColor(sel ? COL.glow : COL.mid);
+        t.setColor(sel ? COL.glow : COL.bright);
       }
     });
   }
@@ -117,7 +117,7 @@ export default class DialogScene extends Phaser.Scene {
       if (t._item) {
         const afford = coins >= t._item.cost;
         t.setText(`${prefix}${t._item.name}  [${t._item.cost}p]`);
-        t.setColor(sel ? COL.glow : afford ? COL.bright : COL.dark);
+        t.setColor(sel ? COL.glow : afford ? COL.bright : COL.mid);
       } else {
         t.setText(`${prefix}< done >`);
         t.setColor(sel ? COL.glow : COL.mid);

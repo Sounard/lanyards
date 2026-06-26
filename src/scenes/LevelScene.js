@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { VIEW, GREEN, TKEY, PLAYER } from '../config.js';
-import { text, panel, COL, FONT } from '../ui.js';
+import { text, panel, COL, FONT, isHelpKey } from '../ui.js';
 import { applyCRT } from '../main.js';
 import { sfx } from '../audio/sfx.js';
 import * as Save from '../save.js';
@@ -74,7 +74,7 @@ export default class LevelScene extends Phaser.Scene {
     // guard with isActive() so these don't fire while the Help overlay is up
     this.input.keyboard.on('keydown-ESC', () => { if (this.scene.isActive()) this.quitToMenu(); });
     this.input.keyboard.on('keydown', e => {
-      if ((e.key === '?' || e.key === 'h' || e.key === 'H') && this.scene.isActive() && !this.finished) this.openHelp();
+      if (isHelpKey(e) && this.scene.isActive() && !this.finished) this.openHelp();
     });
 
     this.scene.launch('UIScene');

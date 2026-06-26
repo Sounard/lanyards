@@ -47,7 +47,7 @@ export default class VoidScene extends Phaser.Scene {
       ? `>> reward: +${bonus} packets. (you already found ${reward}.)`
       : `>> reward: +${bonus} packets & ${reward}.`;
     text(this, 110, cy + 50, msg, { size: 15, color: COL.glow, wrap: VIEW.W - 220 });
-    text(this, 110, cy + 120, 'press any key to cat yourself back out', { size: 13, color: COL.mid });
+    text(this, 110, cy + 120, 'press any key to cat yourself back out', { size: 13, color: COL.bright });
     this.ready = true;
     sfx.win();
   }

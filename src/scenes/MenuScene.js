@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { VIEW } from '../config.js';
-import { text, panel, COL, FONT } from '../ui.js';
+import { text, panel, COL, FONT, isHelpKey } from '../ui.js';
 import { applyCRT } from '../main.js';
 import { sfx } from '../audio/sfx.js';
 import * as Save from '../save.js';
@@ -37,7 +37,7 @@ export default class MenuScene extends Phaser.Scene {
     text(this, cx, 150, `LANYARDS: ${save.lanyards.length}    BEST RUN: ${save.bestPackets} packets`,
       { size: 14, color: COL.glow, origin: 0.5 });
 
-    text(this, cx, 178, '/ W O R L D   M A P /   select a conference', { size: 14, color: COL.mid, origin: 0.5 });
+    text(this, cx, 178, '/ W O R L D   M A P /   select a conference', { size: 14, color: COL.bright, origin: 0.5 });
 
     // scrollable-ish list (fits on one screen for the seeded roster)
     panel(this, cx - 410, 200, 820, 280);
@@ -64,7 +64,7 @@ export default class MenuScene extends Phaser.Scene {
     // footer / controls
     this.hint = text(this, cx, 500,
       '↑↓←→ move   ENTER play   P passport   ? help   A amber   C crt   R reset',
-      { size: 13, color: COL.mid, origin: 0.5 });
+      { size: 13, color: COL.bright, origin: 0.5 });
     this.status = text(this, cx, 522, '', { size: 13, color: COL.glow, origin: 0.5 });
 
     this.renderList();
@@ -100,7 +100,7 @@ export default class MenuScene extends Phaser.Scene {
   onKey(e) {
     if (!this.scene.isActive()) return;   // Help overlay is up
     const cols = 2;
-    if (e.key === '?' || e.key === 'h' || e.key === 'H') { this.openHelp(); return; }
+    if (isHelpKey(e)) { this.openHelp(); return; }
     if (e.key === 'ArrowDown') { this.idx = Math.min(this.items.length - 1, this.idx + cols); sfx.blip(); this.renderList(); }
     else if (e.key === 'ArrowUp') { this.idx = Math.max(0, this.idx - cols); sfx.blip(); this.renderList(); }
     else if (e.key === 'ArrowRight') { this.idx = Math.min(this.items.length - 1, this.idx + 1); sfx.blip(); this.renderList(); }

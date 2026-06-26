@@ -1,49 +1,56 @@
 import Phaser from 'phaser';
 import { VIEW, GREEN } from '../config.js';
-import { text, panel, COL, FONT } from '../ui.js';
+import { text, panel, COL, isHelpOrClose } from '../ui.js';
 
-// Controls + legend overlay, opened with `?` from the menu, a level, or a duel.
-// A transparent overlay over a paused scene — so it must NOT run the CRT pass
-// (that pass forces alpha=1 and would black out everything below). It resumes
-// whichever scene opened it (`from`) on close.
-const LEFT = [
+// Controls + legend overlay, opened with ? / , (or h) from anywhere. Transparent
+// overlay over a paused scene — so it must NOT run the CRT pass. Closes on any of
+// the help keys, ESC, the [X], or a click anywhere — so it's never stuck open.
+
+const COL1 = [
   'TRAVERSE',
-  '  move        ← →   (A D)',
-  '  jump        ↑  W  Space',
-  '  climb nets  ↑ ↓',
-  '  dive        ↓   underwater',
+  '  move       ← →  (A D)',
+  '  jump       ↑ / W / Space',
+  '  climb      ↑ ↓  (nets)',
+  '  dive       ↓  (underwater)',
   '',
   'COMBAT',
-  '  swing       J   (or F)',
+  '  swing      J  (or F)',
   '  enemies split when hit',
   '',
   'INTERACT',
-  '  talk NPC    E',
-  '  bind MCP    E   at a socket',
-  '  help        ?   (toggle)',
-  '  back / quit  Esc'
+  '  talk / bind  E',
+  '  help        ? / ,',
+  '  close       Esc / X'
 ];
 
-const RIGHT = [
+const COL2 = [
   'HUD',
-  '  ████        health',
-  '  PACKETS     currency',
-  '  meter       air, when diving',
-  '  [AGENT]     familiar active',
+  '  ████      health',
+  '  PACKETS   currency',
+  '  meter     air (diving)',
+  '  [AGENT]   familiar',
   '',
   'LEGEND',
-  '  floppy      save / respawn',
-  '  404 · CTX   death pit  (-1)',
-  '  faint pit   SECRET — jump in!',
-  '  lanyard     exit / reward',
-  '',
+  '  floppy    save point',
+  '  404 / CTX death pit (-1)',
+  '  faint pit SECRET — jump in!',
+  '  lanyard   exit / reward'
+];
+
+const COL3 = [
   'FLAME WAR (duel)',
-  '  ← → move   J light   K heavy',
-  '  L special    Space block',
+  '  ← → move',
+  '  J light   K heavy',
+  '  L special  Space block',
   '',
   'WORLD MAP',
-  '  Enter play   A amber',
-  '  C crt        R reset'
+  '  Enter play   P passport',
+  '  A amber  C crt  R reset',
+  '',
+  'PASSPORT (P)',
+  '  S submit a con',
+  '  G join the guild',
+  '  T telemetry on/off'
 ];
 
 export default class HelpScene extends Phaser.Scene {
@@ -52,21 +59,26 @@ export default class HelpScene extends Phaser.Scene {
   init(data) { this.from = data && data.from; }
 
   create() {
-    // dim the world behind
-    this.add.rectangle(0, 0, VIEW.W, VIEW.H, GREEN.bg, 0.9).setOrigin(0, 0);
-    panel(this, 28, 50, VIEW.W - 56, VIEW.H - 100);
+    this.add.rectangle(0, 0, VIEW.W, VIEW.H, GREEN.bg, 0.92).setOrigin(0, 0);
+    panel(this, 28, 44, VIEW.W - 56, VIEW.H - 92);
 
-    text(this, VIEW.W / 2, 70, '?  HELP — CONTROLS & LEGEND', { size: 18, color: COL.glow, origin: 0.5 });
+    text(this, VIEW.W / 2, 62, 'HELP — CONTROLS & LEGEND', { size: 18, color: COL.glow, origin: 0.5 });
 
-    text(this, 70, 108, LEFT.join('\n'), { size: 14, color: COL.bright, lineSpacing: 5 });
-    text(this, 510, 108, RIGHT.join('\n'), { size: 14, color: COL.bright, lineSpacing: 5 });
+    // close [X], top-right of the panel
+    const x = text(this, VIEW.W - 58, 60, '[ X ]', { size: 16, color: COL.glow, origin: 0.5 });
+    x.setInteractive({ useHandCursor: true });
+    x.on('pointerover', () => x.setColor(COL.bright));
+    x.on('pointerout', () => x.setColor(COL.glow));
+    x.on('pointerdown', () => this.close());
 
-    const foot = text(this, VIEW.W / 2, VIEW.H - 62, 'press  ?  or  ESC  to close', { size: 14, color: COL.mid, origin: 0.5 });
-    this.tweens.add({ targets: foot, alpha: 0.4, duration: 700, yoyo: true, repeat: -1 });
+    text(this, 60, 100, COL1.join('\n'), { size: 13, color: COL.bright, lineSpacing: 5 });
+    text(this, 360, 100, COL2.join('\n'), { size: 13, color: COL.bright, lineSpacing: 5 });
+    text(this, 650, 100, COL3.join('\n'), { size: 13, color: COL.bright, lineSpacing: 5 });
 
-    this.input.keyboard.on('keydown', e => {
-      if (e.key === '?' || e.key === 'Escape' || e.key === 'h' || e.key === 'H') this.close();
-    });
+    const foot = text(this, VIEW.W / 2, VIEW.H - 60, 'press  ? / ,  or  ESC  ·  click  ·  [ X ]   to close', { size: 14, color: COL.glow, origin: 0.5 });
+    this.tweens.add({ targets: foot, alpha: 0.5, duration: 700, yoyo: true, repeat: -1 });
+
+    this.input.keyboard.on('keydown', e => { if (isHelpOrClose(e)) this.close(); });
     this.input.on('pointerdown', () => this.close());
   }
 

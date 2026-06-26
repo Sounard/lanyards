@@ -29,7 +29,7 @@ export default class FormScene extends Phaser.Scene {
     text(this, cx, 206,
       suggest ? 'which conference should we add? (type it)'
               : 'email me when new levels drop (totally optional)',
-      { size: 13, color: COL.mid, origin: 0.5 });
+      { size: 13, color: COL.bright, origin: 0.5 });
 
     // input line with a blinking caret
     text(this, 150, 250, suggest ? 'con>' : 'mail>', { size: 16, color: COL.bright });
@@ -46,7 +46,7 @@ export default class FormScene extends Phaser.Scene {
       text(this, 150, 296, 'we read every suggestion. anonymous.', { size: 11, color: COL.mid });
     }
 
-    this.msg = text(this, cx, 352, 'ENTER submit    ·    ESC cancel', { size: 12, color: COL.mid, origin: 0.5 });
+    this.msg = text(this, cx, 352, 'ENTER submit    ·    ESC cancel', { size: 12, color: COL.bright, origin: 0.5 });
 
     this.input.keyboard.on('keydown', e => this.onKey(e));
   }

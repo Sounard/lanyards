@@ -3,6 +3,12 @@
 
 export const FONT = '"Courier New", "Lucida Console", monospace';
 
+// Keys that toggle Help. Several chars so it works whatever the layout produces
+// for that physical key (QWERTY '?' '/', AZERTY ',' etc.) plus 'h'. ESC closes.
+export const HELP_KEYS = ['?', '/', ',', 'h', 'H'];
+export function isHelpKey(e) { return HELP_KEYS.includes(e.key); }
+export function isHelpOrClose(e) { return e.key === 'Escape' || HELP_KEYS.includes(e.key); }
+
 export const COL = {
   bg:     '#020a02',
   dark:   '#0b2f0b',
